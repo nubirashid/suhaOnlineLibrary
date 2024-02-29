@@ -1,8 +1,11 @@
 import books from '../data/books.js'
+import { paginate } from '../utils/paginate.js'
 
 const getBooks = (req, res, next) => {
   try {
-    res.json(books)
+    const { page = 1, limit = 10 } = req.query
+    const booksData = paginate(books, page, limit)
+    res.json(booksData)
   } catch (error) {
     next(error)
   }
