@@ -1,3 +1,8 @@
+import fs from 'fs'
+
+export const loadJSON = (path) =>
+  JSON.parse(fs.readFileSync(new URL(path, import.meta.url)))
+
 export const paginate = (listArray, pageNo, limit) => {
   const numberOfItems = listArray.length
   const itemsPerPage = limit || 5
