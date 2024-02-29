@@ -2,14 +2,21 @@ import express from 'express';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
+import requestTime from './middleware/queryMiddleware.js';
 
 dotenv.config();
 const port = process.env.PORT || 3000;
 
 
 const app = express();
+
+app.use(requestTime);
+
 app.get('/', (req,res) => {
-    res.send('Hello World');
+
+    var responseText = 'Hello World!'
+    
+    res.send(responseText);
 });
 
 app.use('/api/users', userRoutes );
