@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes)
 app.use('/api/books', bookRoutes)
 app.get('*', function (req, res) {
-  res.status(404).send('Sorry the route you accessed, doesn\'t exist')
+  res.status(404).send("Sorry the route you accessed, doesn't exist")
 })
 
 app.use(errorHandler)
