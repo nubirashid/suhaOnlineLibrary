@@ -17,6 +17,14 @@ const books = [
         price: 5.99,
         
       },
+      {
+        "bookID": 3,
+        "BookTitle": "abcTitle",
+        "auther": "abcAuther",
+        "publisher": "abcPub",
+        "ISBN": "12333435",
+        "price": "322"
+        }
   ]
   
   export default books
