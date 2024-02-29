@@ -1,26 +1,29 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import userRoutes from './routes/userRoutes.js';
-import bookRoutes from './routes/bookRoutes.js';
-import requestTime from './middleware/queryMiddleware.js';
+import express from 'express'
+import dotenv from 'dotenv'
+import userRoutes from './routes/userRoutes.js'
+import bookRoutes from './routes/bookRoutes.js'
+import requestTime from './middleware/queryMiddleware.js'
+import errorHandler from './middleware/errorMiddleware.js'
+dotenv.config()
+const port = process.env.PORT || 3000
 
-dotenv.config();
-const port = process.env.PORT || 3000;
+const app = express()
 
+app.use(requestTime)
+app.use(express.json())
 
-const app = express();
+app.get('/', (req, res) => {
+  const responseText = 'Hello World!'
 
-app.use(requestTime);
-app.use(express.json());
+  res.send(responseText)
+})
 
-app.get('/', (req,res) => {
+app.use('/api/users', userRoutes)
+app.use('/api/books', bookRoutes)
+app.get('*', function (req, res) {
+  res.status(404).send('Sorry the route you accessed, doesn\'t exist')
+})
 
-    var responseText = 'Hello World!'
-    
-    res.send(responseText);
-});
+app.use(errorHandler)
 
-app.use('/api/users', userRoutes );
-app.use('/api/books', bookRoutes );
-
-app.listen(port, () => console.log(`Server running on port ${port}`) );
+app.listen(port, () => console.log(`Server running on port ${port}`))

@@ -1,7 +1,11 @@
-import users from '../data/users.js';
+import users from '../data/users.js'
 
-const getUsers = (req,res) => {
-    res.json(users);
+const getUsers = (req, res, next) => {
+  try {
+    res.json(users)
+  } catch (error) {
+    next(error)
+  }
 }
 
-export {getUsers};
+export { getUsers }
