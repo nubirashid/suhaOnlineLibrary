@@ -7,7 +7,10 @@ const authRequired = (req, res, next) => {
       const username = decoded.split(':')[0]
       const password = decoded.split(':')[1]
       //   Using static username and password
-      if (username === 'demo' && password === 'test123') {
+      if (
+        username === process.env.DUMMY_USER_NAME &&
+        password === process.env.DUMMY_PASSWORD
+      ) {
         next()
       } else {
         res

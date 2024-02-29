@@ -1,11 +1,17 @@
-import books from '../data/books.js'
-import { paginate } from '../utils/paginate.js'
+import { writeFileSync } from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { paginate, loadJSON } from '../utils/common.js'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const storedData = loadJSON('../data/books.json')
 
 const getBooks = (req, res, next) => {
   try {
     const { page = 1, limit = 10 } = req.query
-    const booksData = paginate(books, page, limit)
-    res.json(booksData)
+    const booksList = paginate(storedData?.books, page, limit)
+    res.json(booksList)
   } catch (error) {
     next(error)
   }
@@ -14,14 +20,19 @@ const getBooks = (req, res, next) => {
 const addNewBook = (req, res, next) => {
   try {
     const book = {
-      bookID: books.length + 1,
+      bookID: storedData?.books?.length + 1,
       BookTitle: req.body.BookTitle,
-      auther: req.body.auther,
+      author: req.body.author,
       publisher: req.body.publisher,
       ISBN: req.body.ISBN,
       price: req.body.price
     }
-    books.push(book)
+    storedData?.books?.push(book)
+    writeFileSync(
+      path.join(__dirname, '..', 'data', 'books.json'),
+      JSON.stringify(storedData, null, 2),
+      'utf8'
+    )
     res.send(book)
   } catch (error) {
     next(error)
@@ -30,15 +41,23 @@ const addNewBook = (req, res, next) => {
 
 const updateBook = (req, res, next) => {
   try {
-    const book = books.find((b) => b.bookID === parseInt(req.params.id))
+    const book = storedData?.books?.find(
+      (b) => b.bookID === parseInt(req.params.id)
+    )
     if (!book) {
       return res.status(404).send('book with given bookID is not found')
     } else {
       book.BookTitle = req.body.BookTitle || book.BookTitle
-      book.auther = req.body.auther || book.auther
+      book.author = req.body.author || book.author
       book.publisher = req.body.publisher || book.publisher
       book.ISBN = req.body.ISBN || book.ISBN
       book.price = req.body.price || book.price
+
+      writeFileSync(
+        path.join(__dirname, '..', 'data', 'books.json'),
+        JSON.stringify(storedData, null, 2),
+        'utf8'
+      )
 
       res.send(book)
     }
@@ -49,12 +68,21 @@ const updateBook = (req, res, next) => {
 
 const deleteBook = (req, res, next) => {
   try {
-    const book = books.find((b) => b.bookID === parseInt(req.params.id))
+    const book = storedData?.books?.find(
+      (b) => b.bookID === parseInt(req.params.id)
+    )
     if (!book) {
       return res.status(404).send('book with given bookID is not found')
     }
-    const index = books.indexOf(book)
-    books.splice(index, 1)
+    const index = storedData?.books?.indexOf(book)
+    storedData?.books?.splice(index, 1)
+
+    writeFileSync(
+      path.join(__dirname, '..', 'data', 'books.json'),
+      JSON.stringify(storedData, null, 2),
+      'utf8'
+    )
+
     res.send(book)
   } catch (error) {
     next(error)
